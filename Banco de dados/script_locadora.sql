@@ -265,7 +265,6 @@ JOIN Locacao AS L
 -- Testar a view
 SELECT * FROM VW_CLIENTESATIVOS;
 
--- PARA SEGUNDA-FEIRA
 -- procedure locação por cliente 
 
 USE Locadora;
