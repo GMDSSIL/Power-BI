@@ -1,11 +1,8 @@
 /* BANCO DE DADOS: LOCADORA DE VEÍCULOS */
-
 CREATE DATABASE IF NOT EXISTS Locadora;
 USE Locadora;
 
-
-  -- TABELA: CLIENTES
-
+-- TABELA: CLIENTES
 CREATE TABLE Clientes (
     ClienteID INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(100) NOT NULL,
@@ -15,16 +12,14 @@ CREATE TABLE Clientes (
     Endereco VARCHAR(150)
 );
 
- -- TABELA: CATEGORIAS
-
+-- TABELA: CATEGORIAS
 CREATE TABLE Categorias (
     CategoriaID INT PRIMARY KEY AUTO_INCREMENT,
     NomeCategoria VARCHAR(50) NOT NULL,
     ValorDiaria DECIMAL(10,2) NOT NULL
 );
 
---  TABELA: VEÍCULOS
-
+-- TABELA: VEÍCULOS
 CREATE TABLE Veiculos (
     VeiculoID INT PRIMARY KEY AUTO_INCREMENT,
     Placa VARCHAR(10) UNIQUE NOT NULL,
@@ -36,8 +31,7 @@ CREATE TABLE Veiculos (
     FOREIGN KEY (CategoriaID) REFERENCES Categorias(CategoriaID)
 );
 
---  TABELA: FUNCIONÁRIOS
-
+-- TABELA: FUNCIONÁRIOS
 CREATE TABLE Funcionarios (
     FuncionarioID INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(100) NOT NULL,
@@ -46,8 +40,7 @@ CREATE TABLE Funcionarios (
     Email VARCHAR(100)
 );
 
-  -- TABELA: LOCAÇÃO
-
+-- TABELA: LOCAÇÃO
 CREATE TABLE Locacao (
     LocacaoID INT PRIMARY KEY AUTO_INCREMENT,
     ClienteID INT,
@@ -62,8 +55,7 @@ CREATE TABLE Locacao (
     FOREIGN KEY (FuncionarioID) REFERENCES Funcionarios(FuncionarioID)
 );
 
- -- TABELA: PAGAMENTOS
-
+-- TABELA: PAGAMENTOS
 CREATE TABLE Pagamentos (
     PagamentoID INT PRIMARY KEY AUTO_INCREMENT,
     LocacaoID INT,
@@ -120,7 +112,6 @@ INSERT INTO Funcionarios (Nome, Cargo, Telefone, Email) VALUES
 ('Sofia Martins', 'Mecânico', '31966665566', 'sofia.martins@locadora.com'),
 ('Bruno Ferreira', 'Atendente', '41955557788', 'bruno.ferreira@locadora.com');
  
- 
 INSERT INTO Locacao (ClienteID, VeiculoID, FuncionarioID, DataLocacao, DataDevolucaoPrevista, DataDevolucaoReal, ValorTotal) VALUES
 (1, 1, 1, '2025-08-01', '2025-08-05', '2025-08-05', 480.00), -- João alugou Fiat Argo
 (2, 4, 1, '2025-08-02', '2025-08-06', NULL, 880.00),         -- Maria alugou HR-V (ainda não devolveu)
@@ -131,8 +122,7 @@ INSERT INTO Locacao (ClienteID, VeiculoID, FuncionarioID, DataLocacao, DataDevol
 (8, 9, 6, '2025-02-05', '2025-02-07', '2025-02-07', 800.00),   -- Roberto alugou Tesla
 (9, 10, 1, '2025-03-01', '2025-03-05', '2025-03-05', 700.00),  -- Ana alugou Corolla
 (6, 11, 4, '2025-03-10', '2025-03-15', '2025-03-15', 1200.00); -- Lucas alugou Compass
- 
- 
+
 INSERT INTO Pagamentos (LocacaoID, DataPagamento, ValorPago, Metodo) VALUES
 (1, '2025-08-05', 480.00, 'Cartao'),
 (2, '2025-08-02', 880.00, 'PIX'),
@@ -151,68 +141,68 @@ SELECT * FROM Funcionarios;
 SELECT * FROM Locacao;
 SELECT * FROM Pagamentos;
 
--- 1. Liste todos os clientes cadastrados.
+-- Listando todos os clientes cadastrados.
 SELECT * FROM Clientes;
 
--- 2. Mostre apenas os veículos que estão disponíveis.
+-- Mostrando apenas os veículos que estão disponíveis.
 SELECT * FROM Veiculos
 WHERE Status = 'Disponivel';
 
--- 3. Exiba os nomes e telefones dos funcionários que são Gerentes.
+-- Exibindo os nomes e telefones dos funcionários que são Gerentes.
 SELECT Nome, Telefone
 FROM Funcionarios
 WHERE Cargo = 'Gerente';
 
--- 4. Liste os veículos da categoria SUV.
+-- Listando os veículos da categoria SUV.
 SELECT V.*
 FROM Veiculos V
 JOIN Categorias C ON V.CategoriaID = C.CategoriaID
 WHERE C.NomeCategoria = 'SUV';
 
--- 5. Liste todas as locações com: nome do cliente, veículo alugado e data da locação.
+-- Listando todas as locações com: nome do cliente, veículo alugado e data da locação.
 SELECT C.Nome AS Cliente, V.Modelo AS Veiculo, L.DataLocacao
 FROM Locacao L
 JOIN Clientes C ON L.ClienteID = C.ClienteID
 JOIN Veiculos V ON L.VeiculoID = V.VeiculoID;
 
--- 6. Mostre todas as locações e o nome do funcionário responsável.
+-- Mostrando todas as locações e o nome do funcionário responsável.
 SELECT L.LocacaoID, C.Nome AS Cliente, F.Nome AS Funcionario, L.DataLocacao
 FROM Locacao L
 JOIN Clientes C ON L.ClienteID = C.ClienteID
 JOIN Funcionarios F ON L.FuncionarioID = F.FuncionarioID;
 
--- 7. Exiba os pagamentos realizados, mostrando o cliente, o veículo e o método de pagamento.
+-- Exibindo os pagamentos realizados, mostrando o cliente, o veículo e o método de pagamento.
 SELECT C.Nome AS Cliente, V.Modelo AS Veiculo, P.Metodo
 FROM Pagamentos P
 JOIN Locacao L ON P.LocacaoID = L.LocacaoID
 JOIN Clientes C ON L.ClienteID = C.ClienteID
 JOIN Veiculos V ON L.VeiculoID = V.VeiculoID;
 
--- 8. Mostre a quantidade total de veículos cadastrados.
+-- Mostrando a quantidade total de veículos cadastrados.
 SELECT COUNT(*) AS TotalVeiculos
 FROM Veiculos;
 
--- 9. Conte quantas locações cada cliente já realizou.
+-- Contando quantas locações cada cliente já realizou.
 SELECT C.Nome AS Cliente, COUNT(L.LocacaoID) AS TotalLocacoes
 FROM Locacao L
 JOIN Clientes C ON L.ClienteID = C.ClienteID
 GROUP BY C.Nome;
 
--- 10. Mostre todos os clientes que moram em São Paulo.
+-- Mostrando todos os clientes que moram em São Paulo.
 SELECT *
 FROM Clientes
 WHERE Endereco LIKE '%São Paulo%';
 
--- 11. Liste os veículos que já foram alugados pelo menos uma vez.
+-- Listando os veículos que já foram alugados pelo menos uma vez.
 SELECT DISTINCT V.*
 FROM Veiculos V
 JOIN Locacao L ON V.VeiculoID = L.VeiculoID;
 
--- 12. Calcule a média de valor das locações.
+-- Calculando a média de valor das locações.
 SELECT AVG(ValorTotal) AS MediaValorLocacoes
 FROM Locacao;
 
--- 13. Mostre o faturamento total por categoria de veículo.
+-- Mostrando o faturamento total por categoria de veículo.
 SELECT C.NomeCategoria, SUM(L.ValorTotal) AS FaturamentoTotal
 FROM Locacao L
 JOIN Veiculos V ON L.VeiculoID = V.VeiculoID
@@ -220,7 +210,7 @@ JOIN Categorias C ON V.CategoriaID = C.CategoriaID
 GROUP BY C.NomeCategoria
 ORDER BY FaturamentoTotal DESC;
 
--- 14. Exiba o funcionário que mais registrou locações.
+-- Exibindo o funcionário que mais registrou locações.
 SELECT F.Nome AS Funcionario, COUNT(L.LocacaoID) AS TotalLocacoes
 FROM Locacao L
 JOIN Funcionarios F ON L.FuncionarioID = F.FuncionarioID
@@ -228,7 +218,7 @@ GROUP BY F.Nome
 ORDER BY TotalLocacoes DESC
 LIMIT 1;
 
--- 15. Crie uma consulta que mostre o ranking de categorias mais alugadas (em ordem decrescente).
+-- Criando uma consulta que mostre o ranking de categorias mais alugadas (em ordem decrescente).
 SELECT C.NomeCategoria, COUNT(L.LocacaoID) AS TotalAlugueis
 FROM Locacao L
 JOIN Veiculos V ON L.VeiculoID = V.VeiculoID
@@ -237,7 +227,6 @@ GROUP BY C.NomeCategoria
 ORDER BY TotalAlugueis DESC;
 
 -- FATURAMENTO MENSAL - MOSTRA O FATURAMENTO TOTAL AGRUPADO POR MÊS
-
 CREATE VIEW FaturamentoMensal AS
 SELECT 
     DATE_FORMAT(L.DataLocacao, '%Y-%m') AS MesAno,
@@ -246,8 +235,7 @@ FROM Locacao L
 GROUP BY MesAno
 ORDER BY MesAno;
 
--- Testar a view
-
+-- Usando a view de faturamento mensal
 SELECT * FROM FaturamentoMensal ORDER BY MesAno;
 
 -- CLIENTES ATIVOS
@@ -262,11 +250,10 @@ FROM Clientes AS C
 JOIN Locacao AS L
     ON C.ClienteID = L.ClienteID;
 
--- Testar a view
+-- Usando a view de clientes ativos
 SELECT * FROM VW_CLIENTESATIVOS;
 
 -- procedure locação por cliente 
-
 USE Locadora;
 
 DELIMITER $$
@@ -289,7 +276,7 @@ END $$
 
 DELIMITER ;
 
--- Teste
+-- Chamada da procedure
 CALL SP_LOCACOES_POR_CLIENTE('Bruno');
 
 
